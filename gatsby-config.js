@@ -4,8 +4,11 @@ require(`dotenv`).config({
 
 module.exports = {
   siteMetadata: {
-    siteTitle: "Jeremiah Billmann",
-    siteTitleAlt: `Jeremiah Billmann- Developer, Speaker, Blogger`
+    siteTitle: `Jeremiah Billmann`,
+    siteTitleAlt: `Jeremiah Billmann- Developer, Speaker, Blogger`,
+    siteDescription: `Jeremiah Billmann- Developer, Speaker, Blogger`,
+    author: `@jbillmann`,
+    siteUrl: `https://www.jbillmann.com`
   },
   plugins: [
     {
