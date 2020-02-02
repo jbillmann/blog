@@ -40,7 +40,7 @@ module.exports = {
         }
       `,
       output: `rss.xml`,
-      title: `Jeremiah Billmann`
+      title: `Jeremiah Billmann - Developer, Speaker, Blogger`
     }
   ]
 };
