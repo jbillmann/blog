@@ -1,0 +1,191 @@
+---
+title: Using React Hooks to Manage and Organize Application State
+date: 2018-12-12
+slug: "/using-react-hooks-to-manage-and-organize-application-state"
+tags:
+ - javascript
+ - react
+ - hooks
+ - design
+ - state management
+---
+
+(Would you rather read code?  No problem!  View the full working example on either [GitHub](https://github.com/jbillmann/react-hooks-predictable-state-without-redux) or [CodeSandbox](https://codesandbox.io/s/github/jbillmann/react-hooks-predictable-state-without-redux)).
+
+In late October, [React Hooks](https://reactjs.org/docs/hooks-intro.html) was announced.  In short, Hooks provide the ability to tap into React features and reuse state logic across components without having to write class components.
+
+This is fantastic and it's a big deal.
+
+React Hooks will forever change the way that you write your React components going forward.
+
+(This post assumes you have an understanding of the [React Hooks API](https://reactjs.org/docs/hooks-reference.html).  I would encourage you to check it out if you haven't.)
+
+Up until now, one of my biggest gripes with React has been fact that managing state, using only features and patterns that are native to React, quickly becomes complex and difficult to maintain as the application grows in size and complexity.
+
+It's rare that I begin developing a React application without a state management library in mind.
+
+However, I think that React Hooks help correct this problem and it offers tremendous opportunity whereby we can leverage React, and only its patterns, without the feeling of need to bring in additional state management dependencies as your React applications grow in size and complexity.
+
+#### Reducers
+
+`useReducer` [is a React Hook](https://reactjs.org/docs/hooks-reference.html#usereducer) that provides a container, of sorts, to put state logic.  That is to say, the logic that actually handles the changing of your application state. 
+ This logic can subsequently be invoked by passing an action, an object describing the event, to the dispatcher, provided by the hook, in your React components.
+
+```js
+const actions = {
+  increase: () => ({ type: 'increase' }),
+  decrease: () => ({ type: 'decrease' })
+};
+
+function Calculator(props) {
+  const [state, dispatch] = useReducer(reducer, { value: 0 });
+
+  return (
+    <div>
+      <p>Value: {state.value}</p>
+      <button onClick={() => dispatch(actions.increase())}>Increase</button>
+      <button onClick={() => dispatch(actions.decrease())}>Decrease</button>
+    </div>
+  );
+}
+```
+
+The container where this state management logic exists is known as a reducer.
+
+A reducer is really nothing more than a function that takes two parameters, an object that has the current state and an object that contains value(s) describing the action about to impact the current state, and returns a brand new state object.  (The action object payload can vary, but it will almost always carry a `type` property which is effectively the event key.)
+
+```js
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increase':
+      return { value: state.value + 1 };
+    case 'decrease':
+      return { value: state.value - 1 };
+  }
+}
+```
+
+On the surface, this might not seem like a big deal.  But if you look closer, you might recognize that a reducer is also a pure function.
+
+A pure function does not depend on or alter/mutate state outside of its scope (no side effects!).  Given the same input the function will always produce the same output.  In other words, pure functions guarantee predictability and reliability.  No surprises!  With pure functions, we get things like [time travel debugging](https://en.wikipedia.org/wiki/Time_travel_debugging) for free!
+
+It's important that you only make _critical_ state changes from within a reducer for this pattern to succeed!  (Non-critical or UI state changes can leverage `useState`.)
+
+For those keeping track at home, the `useReducer` hook provides us the ability to dispatch actions.  In turn, these actions are passed to a pure reducer whereby state logic is invoked, against the current state and incoming action, and a brand new state is returned.  [Do these things ring a bell?](https://redux.js.org/introduction/threeprinciples)
+
+In short, React now has functionality that are essentially the building blocks for [React's most used state management framework](https://2018.stateofjs.com/data-layer/overview/), [Redux](https://redux.js.org/).
+
+![Flux Architecture](./flux.png)
+
+#### Context
+
+(It's worth noting at this point, that I am not looking to reconstruct Redux with vanilla React patterns.  However, it is hard to ignore the obvious similarities when Redux and the React Hook in question are both built on a foundation of reducers.)
+
+With this information in hand, we can take this to the next level and _wrap_ the aforementioned building blocks by leveraging [React Context](https://reactjs.org/docs/context.html).
+
+React Context allows us to have a global state, a single source of truth, and make our reducer properties conveniently available to our components.  This is important because as we move from one component to the next, reducers will always be acting upon the current global state stored within the context.
+
+```js
+const StoreContext = React.createContext();
+
+const StoreProvider = props => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    <StoreContext.Provider value={{ state, actions, dispatch }}>
+      {props.children}
+    </StoreContext.Provider>
+  );
+};
+```
+
+Doing so, allows us to abstract away the boilerplate associated with the `useReducer` hook and expose the related properties to the entire sub-component tree.
+
+```js
+function App(props) {
+  return (
+    <StoreProvider>
+      <Calculator />
+    </StoreProvider>
+  );
+}
+
+function Calculator(props) {
+  const { state, actions, dispatch } = useContext(StoreContext);
+
+  return (
+    <div>
+      <p>Value: {state.value}</p>
+      <button onClick={() => dispatch(actions.increase())}>Increase</button>
+      <button onClick={() => dispatch(actions.decrease())}>Decrease</button>
+    </div>
+  );
+}
+```
+
+#### Sharing Reducers
+
+In the patterns above, I have only been working with a single reducer.  This simply won't scale well as the application grows in size.  The good news is that we can combine multiple reducers into a single reducer.
+
+```js
+const reducer = (state, action) => {
+  return {
+    history: historyReducer(state.history, action),
+    calculator: calculatorReducer(state.calculator, action)
+  };
+};
+```
+
+With this, each reducer effectively has a slice of the global state that it works with.  Additionally, when an action is dispatched, it can be picked up and processed across all of your reducers.
+
+#### Slicing Reducers
+Now, we can put the icing on the cake.
+
+We can create a custom React Hook, for each of our reducers, to abstract away much of the reducer related properties from our components.  These custom hooks will effectively slice the state and actions associated with its respective reducer.
+
+```js
+function useCalculator() {
+  const { state } = useContext(StoreContext);
+
+  const increase = () => {
+    dispatch(actions.calculator.increase());
+  };
+
+  const decrease = () => {
+    dispatch(actions.calculator.decrease());
+  };
+
+  return {
+    state: state.calculator,
+    increase,
+    decrease
+  };
+}
+```
+
+This is great because it allows the components that consume these custom hooks to not have to worry how state and/or actions are globally organized or even be aware of the dispatcher for that matter.
+
+We can subsequently consume the custom hook in our component.
+
+```js
+function Calculator(props) {
+  const calculatorContext = useCalculator();
+
+  return (
+    <div>
+      <p>Value: {calculatorContext.state.value}</p>
+      <button onClick={calculatorContext.increase}>Increase</button>
+      <button onClick={calculatorContext.decrease}>Decrease</button>
+    </div>
+  );
+}
+```
+
+#### Conclusion
+So, there you have it.
+
+We have implemented predictable state management using relatively clean patterns and we didn't have to pull in a dependency.  Of course, the patterns above are a bit simplified and will likely need to be tweaked for your own application and production needs.
+
+With React Hooks, we now have a less-complex means to manage state in your React application using nothing but React Hook patterns.
+
+I think the future is bright with React Hooks.  I'm looking forward to it; how 'bout you?

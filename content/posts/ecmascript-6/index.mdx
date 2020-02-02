@@ -1,0 +1,118 @@
+---
+title: ECMAScript 6
+date: 2013-11-22
+slug: "/ecmascript-6"
+tags:
+ - javascript
+ - ecmascript
+---
+
+_This blog post originally appeared at [Skyline Technologies](http://skylinetechnologies.com/) (my employer) http://skylinetechnologies.com/Blog/Article/2388/ECMAScript-6.aspx_
+
+Love it or hate it, but if you're doing web development, JavaScript is the one common language denominator. 
+
+Argue all you want about which web application framework (ASP.NET, Ruby on Rails, PHP, etc.) is better, but at the end of the day, you will be forced to agree on one thing:  
+
+JavaScript. 
+
+(Unless you're doing [Node.js](http://nodejs.org/) development, then nobody argues, it's just yummy buckets of JavaScript ice cream all around.)
+
+That being said, JavaScript continues to evolve in more ways than one.  On one hand, it seems that everywhere you look, there is yet another cool JavaScript library (YACJL).  And on the other hand, (perhaps the more important hand) **JavaScript as a language continues to add new features.**  So, contrary to what some people might think, JavaScript wasn't developed 18 years ago and left to the "assembly language of the web gnomes".
+
+In fact, ECMAScript (the formal JavaScript language standard) is standardized by Ecma International.  The same organization that is responsible for the C# standard.  They are working on ECMAScript 6, codenamed "[Harmony](http://wiki.ecmascript.org/doku.php?id=harmony:specification_drafts)", with a [target date of December 2013](http://ecma-international.org/memento/TC39-M.htm).
+
+So, what can we expect from the next version of JavaScript?
+
+Nifty features.
+
+Let's take a peek.
+
+[class](http://wiki.ecmascript.org/doku.php?id=strawman:maximally_minimal_classes):  Ability to declare [minimal classes](http://wiki.ecmascript.org/doku.php?id=strawman:minimal_classes) with constructors, subclassing and properties. 
+
+```js
+class Dog extends Animal {
+    constructor(name, breed) {
+        super(name);
+        this.breed = breed;
+    }
+
+    walk() {
+        ...
+        super.walk();
+    }
+}
+```
+
+[arrow functions](http://wiki.ecmascript.org/doku.php?id=harmony:arrow_function_syntax):  Functions that bind the JavaScript this value, lexically. 
+
+```js
+function Game(){
+    this.time = 0;
+    setInterval(() => {
+        this.time++; // [this] refers to the game object
+    }, 1000);
+}
+```
+
+[default function parameters](http://wiki.ecmascript.org/doku.php?id=harmony:parameter_default_values):  Function parameters receive a default value if no parameter is passed. 
+
+```js
+function add(x = 0, y = 0) {
+    return x + y;
+}
+```
+
+[let](http://wiki.ecmascript.org/doku.php?id=harmony:let):  Block scoped variables that are not subject to variable hoisting. 
+
+```js
+for( let idx = 0; idx < 5; idx++ ) {
+    //idx is only visible within the 'for' scope
+};
+//idx is not visible here
+```
+
+[const](http://wiki.ecmascript.org/doku.php?id=harmony:const):  Read-only variables. 
+
+```js
+const EARTH_GRAVITY = 9.81;
+```
+
+[for...of](http://wiki.ecmascript.org/doku.php?id=harmony:iterators):  Convenient way of doing iteration over enumerables. 
+
+```js
+for (var x of [1, 2, 3]) {
+    alert(x);
+}
+```
+
+[maps and sets](http://wiki.ecmascript.org/doku.php?id=harmony:simple_maps_and_sets):  Maps are objects containing key/value pairs and Sets are objects that hold unique values.
+
+```js
+var map = new Map();
+map.set('MyKey', 'MyValue');
+var mapHas = map.has('MyKey'); //true
+var mapSize = map.size; //1
+map.delete('MyKey');
+mapHas = map.has('MyKey'); //false
+mapSize = map.size; //0
+
+var set = new Set();
+set.add(1);
+var setHas = set.has(1); //true
+var setSize = set.size; //1
+set.delete(1);
+setHas = set.has(1); //false
+setSize = set.size; //0
+```
+
+[modules](http://wiki.ecmascript.org/doku.php?id=harmony:modules):  A native [module loading system](http://wiki.ecmascript.org/doku.php?id=harmony:module_loaders) - forgo the need to wrap JavaScript files in functions!
+
+That's just a few of them, but there is [much](http://wiki.ecmascript.org/doku.php?id=harmony:destructuring), [much](http://wiki.ecmascript.org/doku.php?id=harmony:typed_objects), [more](http://wiki.ecmascript.org/doku.php?id=harmony:generator_expressions).
+
+All that being said, you're probably asking yourself "what about the browsers?"  Well, that's a very poignant question.  Each official release of ECMAScript is only as good as the browser adoption.  Depending on the browser, it may takes months or even years [insert sad face here] for some of the features to be available for use.  In either case, thankfully there are [browser compatibility charts](http://kangax.github.io/es5-compat-table/es6/) that you can track JavaScript feature progress. 
+
+Finally, if you're looking to play around with these right this minute, [Firefox tries to stay ahead of the curve](https://developer.mozilla.org/en-US/docs/Web/JavaScript/ECMAScript_6_support_in_Mozilla).  Be forewarned, however, as these are implementations of features for a specification that has not be finalized.
+
+Happy JavaScripting!
+
+Cheers!

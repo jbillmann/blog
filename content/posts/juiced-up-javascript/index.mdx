@@ -1,0 +1,126 @@
+---
+title: Juiced-Up JavaScript
+date: 2012-11-17
+slug: "/juiced-up-javascript"
+tags:
+ - javascript
+ - typescript
+---
+
+When we last talked, I was declaring my [new found fondness of JavaScript](https://www.jbillmann.com/jquery-goggles).  I left off with saying that one could make an argument that JavaScript is one of the most important languages to know at this moment in time.
+
+So it came as no surprise to me when Microsoft released [TypeScript](http://www.typescriptlang.org/).  What is TypeScript you ask?  TypeScript is just JavaScript, with type checking and class-based constructs.  TypeScript compiles to JavaScript, but since it's a superset of JavaScript, all of your existing JavaScript code and libraries are already TypeScript.  It slims down your would-be JavaScript to a typed, clean and modularized way to build large scale JavaScript applications.  Once compiled, it produces clean JavaScript that adheres to the patterns that we all know and love.
+
+Now, before we go any further, I can hear the good 'ole hemming and hawing about CoffeeScript vs. Dart vs. TypeScript vs. JavaScript and strong vs. loose type checking.
+
+Here's my expert advice:  Use what works for you.
+
+Glad we settled that early, now let's get to the good stuff.
+
+You know we have something worthwhile when Douglas Crockford [says the following about TypeScript](https://plus.google.com/118095276221607585885/posts/MgzNUSTwjRt):
+
+> Microsoft's TypeScript may be the best of the many JavaScript front ends. It seems to generate the most attractive code.
+
+### Install
+
+If you're a Node.js fan, you can download it as a package and invoke the compiler with the following commands:
+
+```sh
+npm install -g typescript
+tsc helloworld.ts
+```
+
+Otherwise you can download the [Visual Studio 2012 plugin](http://www.microsoft.com/en-us/download/details.aspx?id=34790).  If you install the VS plugin, you'll have a new project type and file type available along with integrated TypeScript compilation.
+
+![TypeScript Project1](./typescript-application.png)
+
+![TypeScript Project2](./typescript-file.png)
+
+TypeScript contains a few nifty features for type checking and class organization.  Let's talk about them.
+
+### Type Checking 
+
+```ts
+function helloWorld(name: string) {
+  return 'Hello World, my name is ' + name;
+}
+```
+
+See what I did there?  I added a type annotation to the name parameter in the helloWorld method signature.  Just like that, we have type checking against any calls to helloWorld ensuring that the name argument is in fact a string.  Pretty cool, eh?  Now you're probably wondering what the JavaScript will look like after you compile this snippet of TypeScript.  Plain old, simple JavaScript, just as one would expect:
+
+```js
+function helloWorld(name) {
+  return 'Hello World, my name is ' + name;
+}
+```
+
+### Classes & Interfaces
+
+```ts
+class Developer {
+  firstName: string;
+  lastName: string;
+
+  constructor (firstName: string, lastName: string) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
+
+  getFullName() {
+    return this.firstName + ' ' + this.lastName;
+  }
+}
+
+var developer = new Developer('Jeremiah', 'Billmann');
+var fullName = developer.getFullName();
+```
+
+Here we are declaring a class called Developer that initializes with a first and last name and that exposes a public method to return the full name.  You'll immediately recognize that we've applied type annotations to the private member variables as well as those parameters in the constructor.  With the use of the class and constructor keywords along with the class definition layout, we have a clean, simple way of creating and organizing a JavaScript class.  Things get a little exciting now as you're probably wondering what the JavaScript compiles to?  Recall me saying that TypeScript considers JavaScript's best patterns... 
+
+```js
+var Developer = (function () {
+  function Developer(firstName, lastName) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
+  Developer.prototype.getFullName = function () {
+    return this.firstName + ' ' + this.lastName;
+  };
+  return Developer;
+})();
+
+var developer = new Developer('Jeremiah', 'Billmann');
+var fullName = developer.getFullName();
+```
+
+Recognize the pattern? The use of the TypeScript class compiles to JavaScript that uses prototypes, closures and self-executing functions to be mindful of the JavaScript global and local scopes.  The beauty of TypeScript is that you don't have to use the class-based constructs, or anything TypeScript for that matter, if you don't want to.  Perhaps you have a situation when you just want the primitive type checking and you want to hand-roll your JavaScript classes and modules - by all means, go ahead.
+
+Now, suppose we wanted to pass our developer object to a function and ensure it is the proper type:
+
+```ts
+function doSomething(developer: Developer) {
+  var fullName = developer.getFullName();
+}
+```
+
+Maybe you wanted to create an abstraction for the Developer class and have it abide by an interface:
+
+```ts
+interface Person {
+  getFullName();
+}
+
+function doSomething(developer: Person) {
+  var fullName = developer.getFullName();
+}
+```
+
+Again, not much effort required here for type checking.  The JavaScript end result would look no different than the Developer snippet above.
+
+### Big bang for your buck
+
+Did I mention it [supports source level debugging](http://blogs.msdn.com/b/typescript/archive/2012/11/15/announcing-typescript-0-8-1.aspx) and has an [awesome playground](http://www.typescriptlang.org/Playground/)?
+
+I like simple things that add great value.  So, if you like type checking and familiar OO class-based constructs, TypeScript is one of those things. 
+
+However, if you're telling me I should take my [jQuery Goggles](https://www.jbillmann.com/jquery-goggles) off and just learn to love the JavaScript, perhaps you're right.

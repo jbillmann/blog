@@ -1,0 +1,124 @@
+---
+title: Introducing GarageServer.IO
+date: 2013-08-18
+slug: "/introducing-garageserver-io"
+tags:
+ - cloud
+ - javascript
+ - node.js
+ - socket.io
+ - gamedev
+ - garageserver.io
+ - html
+---
+
+Last we chatted, I was talking up the [JavaScript Cloud](https://www.jbillmann.com/javascript-cloud/) and I hinted that it was the perfect backdrop for my next JavaScript endeavor.
+
+Well, it certainly was.
+
+I kept my word and fully embraced the JavaScript Cloud with the [Cloud9 IDE](https://c9.io/)... and I enjoyed every minute of it.  Despite owning a license for [WebStorm](https://www.jetbrains.com/webstorm/), a product for which I have very favorable things to say, I found that I preferred the lightweight, code anywhere IDE that Cloud9 offers.  And trust me when I say that I spent a lot of time getting to know it... over [300 GitHub commits](https://github.com/jbillmann/GarageServer.IO/graphs/contributors?from=2013-05-04&to=2013-08-12&type=c) reaching a peak of [46 consecutive days of GitHub contributions](https://github.com/jbillmann).  (Next up on the blog roll, how to avoid burn-out.)
+
+While writing that post, I had been thinking hard on an abstract for That Conference.  (Which, by the way, if you haven't heard of [That Conference](http://www.thatconference.com/), you should check it out and then plan on attending next year.)  The idea was to present on HTML multiplayer game concepts using Node.js and Socket.IO.  (Yes, I may have a slight fascination with web sockets.)  I wanted to take it one step further than just concepts.  I intended to provide and demo a simple, lightweight, and open source game server that implemented those same concepts during my talk.  Once I found out that my [abstract](http://www.thatconference.com/sessions/speaker_388) was accepted, I had just over 3 months to prepare a talk and write a Node.js game server. 
+
+So, I did just that.
+
+I developed what I call [GarageServer.IO - a simple, lightweight, HTML multiplayer game server for Node.js](https://github.com/jbillmann/GarageServer.IO).
+
+![GarageServer.IO](./GarageServerIO_logo.png)
+
+Source: My Wife (graphic designer for hire)
+
+### About GarageServer.IO
+
+GarageServer.IO is a simple, authoritative, multiplayer, Node.js game server (and JavaScript client) that features many of the [basic multiplayer game concepts](http://www.gabrielgambetta.com/fast_paced_multiplayer.html).  It is basically a game server abstraction over [Socket.IO](http://socket.io/).  Simply put, HTML multiplayer games can leverage GarageServer.IO to communicate player inputs and states all the while gaining the following features out of the box:
+
+* Client Side / Input Prediction
+* Client Side Smoothing
+* Entity Interpolation
+* Server State History
+* Server and Client Messaging
+* Server Reconciliation
+* Works with any rendering and/or physics engine
+
+My goal was to keep things simple.  I didn't set out to create a game server with 50 pages of API documentation but, let's face it, you probably won't be creating World of Warcraft with it anytime soon.
+
+I chose Node.js and Socket.IO because of the speed, throughput, coupled with a JavaScript code-base that can be shared between the client and the server (big advantage, especially with game physics).
+
+So, let's see how simple it actually is.
+
+### GarageServer.IO Server
+
+Install it via the Node Package Manager:
+
+```sh
+$ npm install garageserver.io
+```
+
+Create an instance of the GarageServer.IO server, fire up your physics loop, continually get the players, process their pending inputs and send the new state back to GarageServer.IO.  Each client that connects to GarageServer.IO is treated as a player, for non-players (I.e. bullets, treasure chests, etc.), GarageServer.IO offers entities.
+
+```js
+var server = require('garageserver.io').createGarageServer(sockets, {/*options*/ });
+server.start();
+
+// Inside game loop ...
+var players = server.getPlayers();
+
+players.forEach(function (player) {
+    var newState = {};
+    if (!player.state.x) {
+        player.state.x = 0;
+    }
+    for (i = 0; i < player.inputs.length; i ++) {
+        if (player.inputs[i].input === 'left') {
+            newState.x = player.state.x - (50 * deltaTime);
+        } else if (inputs[i].input === 'right') {
+            newState.x = player.state.x + (50 * deltaTime);
+        }
+    }
+    server.updatePlayerState(player.id, newState);
+});
+```
+
+### GarageServer.IO Client
+
+After server install, copy the JavaScript client from (this will soon change - perhaps, [Bower](http://bower.io/))
+
+```
+/node_modules/garageserver.io/client/garageserver.io.js
+```
+
+and add it to your application's scripts folder.
+
+Create an instance of the [GarageServer.IO client](https://github.com/jbillmann/GarageServer.IO/blob/master/documentation/ClientAPI.md), fire up your game loop, continually get the player inputs, send them to the GarageServer.IO and render all of the players latest states received by GarageServer.IO.
+
+```js
+GarageServerIO.initializeGarageServer('insertmygameserverurlhere.com', { /* options */ });
+ 
+// Inside game loop...
+GarageServerIO.addInput(/*player input - in this example 'left' or 'right'*/);
+
+var playerStates = GarageServerIO.getPlayerStates();
+playerStates.forEach(function (player) {
+    ctxCanvas.fillRect(player.state.x, 0, 5, 5);
+});
+```
+
+That's it.  Over-simplifying things, of course.
+
+You probably noticed that GarageServer.IO is agnostic of your game physics and rendering.  You're right, that is, of course, intentional and that's the beauty of it.  It works (should) with any JavaScript rendering engine (I.e. [Crafty](http://craftyjs.com/)) and/or physics engine (I.e. [Box2D](http://box2d.org/)).  Its policy is simply "tell me some stuff about your game and I'll handle the multiplayer game broadcasting".
+
+A [working example of GarageServer.IO](https://github.com/jbillmann/GarageServer.IO/tree/master/example), using [Express](http://expressjs.com/), can be cloned from the GitHub repo and ran locally.  Please read the instructions especially if you're running it locally or without latency.
+
+### Current State
+
+GarageServer.IO is in an alpha release... the API may very well change - hopefully for the better.  I intend on releasing the beta later this year that will have a more stable API and it'll include additional features such as:
+
+* Regions - broadcast state only to players who need to know
+* Latency Resolver - enhanced game play based on latency
+* Bug fixes - believe it or not... ;-)
+
+It's licensed under the [MIT License](https://github.com/jbillmann/GarageServer.IO/blob/master/LICENSE.md)... so do whatever you want with it.  Fork it, clone it, ????, and/or make millions of dollars with it - the choice is up to you.  Lastly, if you don't like X or you wish it had Y, I accept criticism in the form of pull requests.
+
+I'll continue to post GarageServer.IO updates either on my blog or on my Twitter account.  In the mean time, happy game development.
+
+Cheers!

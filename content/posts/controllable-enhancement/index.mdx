@@ -1,0 +1,124 @@
+---
+title: Controllable Enhancement
+date: 2016-08-05
+slug: "/controllable-enhancement"
+tags:
+ - javascript
+ - node.js
+ - isomorphic
+ - universal
+ - controllable enhancement
+ - progressive enhancement
+---
+
+It's no secret that JavaScript has been growing at a rapid pace over the years.  
+
+#### JavaScript Bloat
+
+The average JS transfer size per website, in the top 1000, [has grown almost 500% since late 2010](http://httparchive.org/trends.php?s=Top1000&minlabel=Nov+15+2010&maxlabel=Jul+15+2016).  Meanwhile, the average HTML transfer size in that same period and selection, when compared to JS, [has grown a "paltry" 100%](http://httparchive.org/trends.php?s=Top1000&minlabel=Nov+15+2010&maxlabel=Jul+15+2016).
+
+As a whole, the [Average Webpage Is Now the Size of the Original Doom](http://www.wired.com/2016/04/average-webpage-now-size-original-doom/)!  (The thought of multiple floppy disks for a game install still drives me bonkers.)
+
+All this is incredible, but it's really not surprising to anyone involved with web development.
+
+Of course, the "boom" has largely been associated with the development of rich, responsive websites that (hopefully!) make interaction of said websites easier on the end user.
+
+While the functional advantages of "more JavaScript" are obvious from an end user standpoint, I think the technical disadvantages are greatly, and perhaps often, overlooked from a mobile standpoint.
+
+Last September, [Jeff Atwood](http://codinghorror.com) wrote a [blog post discussing The State of JavaScript](https://meta.discourse.org/t/the-state-of-javascript-on-android-in-2015-is-poor/33889):
+
+>In a nutshell, the fastest known Android device available today -- and there are millions of Android devices much slower than that out there -- performs 5× slower than a new iPhone 6s, and a little worse than a 2012 era iPhone 5 in Ember. How depressing.  We've done enough research to know this issue is not really specific to Ember, but also affects Angular and most other heavy/complex JavaScript on Android. Why?
+
+...
+
+>This is becoming more and more of a systemic problem in the Android ecosystem, one that will not go away in the next few years, and it may affect the future of Discourse, since **we bet heavily on near-desktop JavaScript performance on mobile devices.** That is clearly happening on iOS but it is quite disastrously the opposite on Android.
+
+...
+
+>I am no longer optimistic this will change in the next two years, and there are untold millions of slow Android devices out there, so we need to start considering alternatives for the Discourse project.
+
+(Emphasis his, not mine)
+
+His post highlights different metrics about JavaScript _runtime_ performance on various mobile devices, but his post does not highlight _load time_ metrics with regards to mobile devices.
+
+[Henrik Joreteg](https://joreteg.com) went on to write a blog post discussing [The viability of JS frameworks on mobile](https://joreteg.com/blog/viability-of-js-frameworks-on-mobile) in response to Atwood's post:
+
+>Whether I like it or not, not everyone using my web apps will be running iOS 9 on an iPhone 6S or a Nexus 6P and connecting via super-speedy wifi.
+
+>The reality is often anything but that. 3G connections and older hardware is often the norm.
+
+...
+
+>You may be thinking: ”this is load time performance, Atwood was talking about runtime performance!”
+
+>Yes, Atwood was discussing runtime performance, I’ll get to that shortly. **But, the user doesn’t care why they’re waiting, so load time is clearly an important part of performance too.**
+
+...
+
+>**My question is simply: are all these heavier tools/frameworks even viable for mobile use?**
+
+>**I’m not convinced they all are.**
+
+(Emphasis Mine)
+
+Both posts are great reads and I suggest you take some time to read them.  Collectively, they both make great points when it comes to _load time_, _transfer time_, and _runtime_ JavaScript performance on mobile devices.
+
+All that being said, here is what you need to know right now:  JavaScript performance on different mobile devices and networks can be vastly different and, as such, potentially consequential to the performance of your web application.
+
+#### Isomorphic/Universal JavaScript Applications to the Rescue
+
+[Universal Web applications](http://nerds.airbnb.com/isomorphic-javascript-future-web-apps/) are those applications that simply [share JavaScript components between the client and the server](http://techblog.netflix.com/2015/08/making-netflixcom-faster.html).  That's it.  That's all that you need to know for the intent of this blog post.
+
+We can create Universal JavaScript applications leveraging Node.js as a server-side runtime.  Node.js is able to serve up JavaScript components to the client and these components can be consumed by both the client and server.
+
+Universal JavaScript applications offer several advantages, such as SEO, performance, and maintainability, but one nice thing about Universal JavaScript applications is that you can get [Progressive Enhancement](https://en.wikipedia.org/wiki/Progressive_enhancement) for "free":
+
+> Progressive enhancement uses web technologies in a layered fashion that allows everyone to access the basic content and functionality of a web page, using any browser or Internet connection, while also providing an enhanced version of the page to those with more advanced browser software or greater bandwidth.
+
+[In other words](https://medium.com/the-thinkmill/making-the-case-for-progressive-javascript-a98dfa82b9d7#.igb0lxr3t):
+
+>The JavaScript runs on the server. Then it’s sent to the client and continues. There it does more. Handles interactivity. Takes over.
+
+The thought process behind Progressive Enhancement is to always provide an upgraded experience if the _client/browser_ allows for it.
+
+#### Enter Controllable Enhancement
+
+Let's pause for a moment and ask ourselves the following questions:
+
+So, if Universal JavaScript applications give us Progressive Enhancement for free, the idea that we enhance the website with JavaScript on the _client_, couldn't we simply refuse to do so?  In other words, we intentionally make a decision when we want to have a rich _user_ experience even though the _client_ allows for it?
+
+Exactly.  
+
+Or as I like to call it: Controllable Enhancement.
+
+The JavaScript runs on the server. Then the server chooses whether or not to send the JavaScript to the client so that it can (or cannot) continue and take over on the client.  
+
+With Controllable Enhancement, we can make a decision that the user does not need rich, responsive functionality thereby forgoing the JavaScript load time, transfer time, and runtime costs.
+
+Contrary to the thought process behind Progressive Enhancement, Controllable Enhancement is to intentionally scale back functionality and associating performance costs if the _user_ doesn't actually need it.
+
+Progressive Enhancement is about the _client_ whereas Controllable Enhancement is about the _user_.
+
+#### Controllable Enhancement in Action
+
+To demonstrate this, [I've created a very simple Universal JavaScript application representing the thought process behind Controllable Enhancement](https://github.com/jbillmann/universal-react).
+
+It leverages several Isomorphic JavaScript libraries such as [React](https://facebook.github.io/react/), [Redux](https://github.com/reactjs/react-redux), and [React Router](https://github.com/reactjs/react-router) along with an  [Express](https://expressjs.com/) backend.
+
+You can run the application with JavaScript enabled or disabled and you can toggle that setting, at will, while using the application.
+
+While this example is "extreme", the idea here is that, if the server wanted to, it could simply omit sending up HTML with a JavaScript reference to the shared components.
+
+Effectively, this example is a Single Page Application (SPA) that can be run as a "Traditional" application at any point in time.  More importantly, a "Traditional" application with a reduction of enhancement costs.
+
+#### Fight JavaScript Bloat with more JavaScript
+
+I know that, by now, you're probably asking yourself, "Jeremiah, you're suggesting that we defeat JavaScript bloat & mobile JavaScript performance problems by effectively using more JavaScript."
+
+Indeed I am, my friend.
+
+However, I'm not suggesting that we go to the "extreme" when creating web applications.  While you certainly can, I'm also not suggesting that you create Universal JavaScript applications that can fully and functionally operate with or without sending JavaScript to the client.  There are people much smarter than I am in this world who can probably devise techniques to do this more easily on a module level.
+
+I'm simply suggesting that Universal JavaScript applications make it easier for you to be in control of which enhancements are sent to the client thereby you can also be in control of JavaScript transfer time, load time, and runtime time costs.
+
+When you consider multi-device accessibility, data limitations, and how far raw HTML has come, perhaps there is simply too much JavaScript at times such that a web application in control of its client enhancements isn't such a bad idea.

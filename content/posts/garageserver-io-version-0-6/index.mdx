@@ -1,0 +1,67 @@
+---
+title: GarageServer.IO Version 0.6
+date: 2013-10-10
+slug: "/garageserver-io-version-0-6"
+tags:
+ - javascript
+ - node.js
+ - socket.io
+ - gamedev
+ - garageserver.io
+ - html
+ - cloud
+---
+
+![GarageServer.IO](./GarageServerIO.png)
+
+So, what's new with the latest release, 0.6, of [GarageServer.IO](https://www.jbillmann.com/introducing-garageserver-io/) - the simple, lightweight, HTML multiplayer game server for Node.js?
+
+- Region support!
+- Low latency fixes!
+
+Early releases of GarageServer.IO would broadcast state to all players.  This was no good because it made developers grumpy.
+
+![Angry Cat Developer](./AngryCatDeveloper.jpg)
+
+("_... developers grumpy", as in plural?_ Who am I trying to kid!)
+
+The major issue here was bandwidth.
+
+It usually isn't necessary to notify the entire state of the game to all players (clients) for every single broadcast loop (server).  This has a compounding effect when you're sending the full game state, quite a few times per second, to _every single player_.  Rather, it's only necessary to send the subset of the game state that actually matters to the player.
+
+This is where regions come into play.
+
+With the latest release of GarageServer.IO, you can set <code>[Player](https://github.com/jbillmann/GarageServer.IO/blob/master/documentation/ServerAPI.md#setplayerregion)</code> and <code>[Entity](https://github.com/jbillmann/GarageServer.IO/blob/master/documentation/ServerAPI.md#setentityregion)</code> regions.
+
+```js
+GarageServerIO.setPlayerRegion(id, region)
+...
+GarageServerIO.setEntityRegion(id, region)
+```
+
+Invoking either of these methods on the server will implicitly enable region broadcasting and only those players and/or entities within regions will be notified of game state.  Each time the broadcast loop fires, it will only send the state of the players or entities to those who share the same region.
+
+If, for whatever reason, you wanted to return to sending the entire game state to all players, you can always clear all regions associated with players and entities.
+
+```js
+GarageServerIO.clearRegions()
+```
+
+Beyond regions, a couple of minor fixes were made to enhance multiplayer game play in games that had low latency.
+
+I also deployed a [playable demo](http://garageserverio.jit.su/) of the [GarageServer.IO example](https://github.com/jbillmann/GarageServer.IO/tree/master/example), using version 0.6, over to [Nodejitsu](https://www.nodejitsu.com/).  (Hint:  open up multiple browsers.)
+
+You can also install the latest version of GarageServer.IO via [npm](https://npmjs.org/):
+
+```sh
+npm install garageserver.io
+```
+
+GarageServer.IO is still very much in an alpha release at this point.  I expect to have the beta ready by the end of the year which will contain the last of the major features before its official release:
+
+- Latency resolver
+- Entity client side prediction
+
+All that said, stay tuned to this blog for GarageServer.IO updates.
+
+Cheers!

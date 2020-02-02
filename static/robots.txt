@@ -1,0 +1,3 @@
+User-agent: *
+
+sitemap: https://www.jbillmann.com/sitemap.xml
