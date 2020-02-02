@@ -32,7 +32,7 @@ module.exports = {
           },
           {
             name: `LinkedIn`,
-            url: `https://www.linkedin.com/in/jeremiah-billmann-86393117`
+            url: `https://www.linkedin.com/in/jbillmann`
           },
           {
             name: `GitHub`,
