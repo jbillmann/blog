@@ -21,7 +21,10 @@ const Footer = () => {
       }}
     >
       <div>
-        &copy; {new Date().getFullYear()}, {siteTitle}. 🦖🦕
+        &copy; {new Date().getFullYear()}, {siteTitle}.
+        <Styled.a href="https://www.amazon.com/Rise-Fall-Dinosaurs-History-World-ebook/dp/B0727TN8H6">
+          🦖🦕
+        </Styled.a>
       </div>
     </footer>
   );
