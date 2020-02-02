@@ -25,7 +25,7 @@ const Header = () => {
           <img
             src="/jeremiah-billmann.jpg"
             style={{
-              maxWidth: 50,
+              width: 50,
               borderRadius: `100%`,
               marginRight: 20,
               float: "left"
