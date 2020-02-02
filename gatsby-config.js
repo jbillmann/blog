@@ -5,7 +5,7 @@ require(`dotenv`).config({
 module.exports = {
   siteMetadata: {
     siteTitle: "Jeremiah Billmann",
-    siteTitleAlt: `Jeremiah Billmann`
+    siteTitleAlt: `Jeremiah Billmann- Developer, Speaker, Blogger`
   },
   plugins: [
     {
@@ -31,7 +31,7 @@ module.exports = {
             url: `https://www.linkedin.com/in/jeremiah-billmann-86393117`
           },
           {
-            name: `Github`,
+            name: `GitHub`,
             url: `https://www.github.com/jbillmann`
           }
         ]
@@ -47,8 +47,8 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `A Blog By Jeremiah Billmann`,
-        short_name: `Jeremiah Billmann Blog`,
+        name: `Jeremiah Billmann - Developer, Speaker, Blogger`,
+        short_name: `Jeremiah Billmann - Developer, Speaker, Blogger`,
         description: `Software engineer most of the time.  Beer aficionado, 60% of the time, all the time.  And this is my blog some of the time.`,
         start_url: `/`,
         background_color: `#fff`,
