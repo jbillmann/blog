@@ -1,0 +1,38 @@
+---
+title: Introducing Launch.IO
+date: 2021-02-15
+slug: "/introducing-launch-io"
+tags:
+  - launch.io
+  - javascript
+  - react
+  - hooks
+  - design
+  - state management
+---
+
+At some point, rather recently, I began to rethink part of my approach to software developent. [Joel Spolsky's](https://www.joelonsoftware.com) [_Architecture Astronauts_ post](https://www.joelonsoftware.com/2001/04/21/dont-let-architecture-astronauts-scare-you/), of decades ago, has been weighing on me.
+
+I began to grow tired of unnecessary complexity, over-abstractions, library bloat, feature bloat, and the subsequent documentation bloat. Not to mention, dependency bloat. I know, I should probably write a blog post about software bloat in general.
+
+Specifically, and with that in mind, I think that state management with React should not be hard; it should not be bloated or over-abstracted. After all, we are really just talking about writing and/or fetching values stored in some variables that an application has access to.
+
+The barrier to entry, especially with React state management, should not be hard assuming that you know how to React.
+
+(The irony of my aforementioned statements along with [React Hooks](https://reactjs.org/docs/hooks-intro.html), and what I am about to share, is not lost on me in all of this.)
+
+![Launch.IO Logo](./launch-io-logo.png)
+
+So, that is why I created [Launch.IO](https://www.launchio.dev); an ultra hip, simple, smart, and fast, React state management library. I think that great libraries should be fun and rewarding to developers, and so I added [time travel debugging](https://en.wikipedia.org/wiki/Time_travel_debugging).
+
+I am not going to get into `code` in this blog post, so feel free to pause for one minute, and grok the [Launch.IO website](https://www.launchio.dev). It is one simple page and it covers install, setup, and basic use cases. If you are enjoying what you are reading, you can take an extra 5 minutes and read _all_ of the [Launch.IO API documentation](https://github.com/launch-io/launch.io/blob/master/docs/api/index.md).
+
+Launch.IO provides the means to easily and consistently define your application state into as many different domain services as you see fit. Services require a name (for access), initial state, and a set of actions that should be pure functions that return the new service state. The actions within these services, since they are pure, will predictably update their service state and this subsquently allows for the time travel debugging.
+
+Launch.IO provides a React Hook to allow components to pass selector functions which return the state and/or actions, from the defined services, that your components need to leverage or launch (invoke). No special setup or component integration is required and you can rewind or fast-forward time as needed.
+
+The core of Launch.IO is actually entirely independent of React. The glue that binds the two is the React Hook, `useLaunch`, that comes with the library. If I were feeling extra motivated, Launch.IO could be ported to Angular, Vue, or [insert your UI library], but I am not feeling motiviated... yet.
+
+I have spent a lot of time working with various React state management libraries. Many of them I still love, and I even used patterns (obviously) from some of them in Launch.IO. Compared to those libraries, however, Launch.IO aims to scale back the abstractions, boilerplate, features, and other bloat that is probably not required to be successful when managing React state.
+
+You probably don't need the overhead and extended features of other React state management libraries. You just need Launch.IO and some good vanilla ice cream.
