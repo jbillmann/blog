@@ -11,6 +11,8 @@ tags:
   - state management
 ---
 
+![Launch.IO Logo](./launch-io-logo.png)
+
 At some point, rather recently, I began to rethink part of my approach to software developent. [Joel Spolsky's](https://www.joelonsoftware.com) [_Architecture Astronauts_ post](https://www.joelonsoftware.com/2001/04/21/dont-let-architecture-astronauts-scare-you/), of decades ago, has been weighing on me.
 
 I began to grow tired of unnecessary complexity, over-abstractions, library bloat, feature bloat, and the subsequent documentation bloat. Not to mention, dependency bloat. I know, I should probably write a blog post about software bloat in general.
@@ -21,11 +23,9 @@ The barrier to entry, especially with React state management, should not be hard
 
 (The irony of my aforementioned statements along with [React Hooks](https://reactjs.org/docs/hooks-intro.html), and what I am about to share, is not lost on me in all of this.)
 
-![Launch.IO Logo](./launch-io-logo.png)
-
 So, that is why I, with help and ideas from [Andrew Petersen](https://www.dev.to/droopytersen), created [Launch.IO](https://www.launchio.dev); an ultra hip, simple, smart, and fast, React state management library. I think that great libraries should be fun and rewarding to developers, and so I added [time travel debugging](https://en.wikipedia.org/wiki/Time_travel_debugging).
 
-I am not going to get into `code` in this blog post, so feel free to pause for one minute, and grok the [Launch.IO website](https://www.launchio.dev). It is one simple page and it covers install, setup, and basic use cases. If you are enjoying what you are reading, you can take an extra 5 minutes and read _all_ of the [Launch.IO API documentation](https://github.com/launch-io/launch.io/blob/master/docs/api/index.md).
+I am not going to get into `code` in this blog post, so feel free to pause for one minute, and grok the [Launch.IO website](https://www.launchio.dev) or go straight to the [CodeSandbox Demo](https://codesandbox.io/s/launchio-demo-yqo2n). The website is one simple page and it covers install, setup, and basic use cases. If you are enjoying what you are reading, you can take an extra 5 minutes and read _all_ of the [Launch.IO API documentation](https://github.com/launch-io/launch.io/blob/master/docs/api/index.md).
 
 Launch.IO provides the means to easily and consistently define your application state into as many different domain services as you see fit. Services require a name (for access), initial state, and a set of actions that should be pure functions that return the new service state. The actions within these services, since they are pure, will predictably update their service state and this subsquently allows for the time travel debugging.
 
